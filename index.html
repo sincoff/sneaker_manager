@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solo Project 1: Sneaker Vault</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>My Sneaker Vault</h1>
+            <div id="stats-bar" class="stats-box">
+                <span>Total Pairs: <b id="total-count">0</b></span> |
+                <span>Portfolio Value: $<b id="total-value">0</b></span>
+            </div>
+        </header>
+
+        <section class="form-section">
+            <h2 id="form-title">Add New Kick</h2>
+            <form id="item-form">
+                <input type="hidden" id="item-id">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Brand:</label>
+                        <select id="brand" required>
+                            <option value="Nike">Nike</option>
+                            <option value="Jordan">Jordan</option>
+                            <option value="Adidas">Adidas</option>
+                            <option value="New Balance">New Balance</option>
+                            <option value="Yeezy">Yeezy</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Model Name:</label>
+                        <input type="text" id="model" required placeholder="e.g. Air Max 1 'Big Bubble'">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>US Size:</label>
+                        <input type="number" id="size" step="0.5" min="1" max="18" required placeholder="10.5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Est. Value ($):</label>
+                        <input type="number" id="value" min="0" required placeholder="220">
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" id="save-btn">Add to Vault</button>
+                    <button type="button" id="cancel-btn" class="hidden" onclick="resetForm()">Cancel Edit</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="list-section">
+            <h2>Collection</h2>
+            <table id="collection-table">
+                <thead>
+                    <tr>
+                        <th>Brand</th>
+                        <th>Model</th>
+                        <th>Size</th>
+                        <th>Value</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
