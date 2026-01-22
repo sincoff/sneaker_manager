@@ -1,65 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solo Project 1: Sneaker Vault</title>
+    <title>My Sneaker Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>My Sneaker Vault</h1>
-            <div id="stats-bar" class="stats-box">
-                <span>Total Pairs: <b id="total-count">0</b></span> |
-                <span>Portfolio Value: $<b id="total-value">0</b></span>
+            <h1>Sneaker Inventory</h1>
+            <div class="stats-box">
+                Total Pairs: <span id="total-count">0</span> | 
+                Total Value: $<span id="total-value">0</span>
             </div>
         </header>
 
         <section class="form-section">
-            <h2 id="form-title">Add New Kick</h2>
+            <h3>Add / Edit Sneaker</h3>
             <form id="item-form">
                 <input type="hidden" id="item-id">
                 
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label>Brand:</label>
+                    <div>
+                        <label>Brand</label>
                         <select id="brand" required>
                             <option value="Nike">Nike</option>
                             <option value="Jordan">Jordan</option>
                             <option value="Adidas">Adidas</option>
                             <option value="New Balance">New Balance</option>
                             <option value="Yeezy">Yeezy</option>
-                            <option value="Other">Other</option>
                         </select>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Model Name:</label>
-                        <input type="text" id="model" required placeholder="e.g. Air Max 1 'Big Bubble'">
+
+                    <div>
+                        <label>Model</label>
+                        <input type="text" id="model" placeholder="e.g. Air Max 90" required>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>US Size:</label>
-                        <input type="number" id="size" step="0.5" min="1" max="18" required placeholder="10.5">
+
+                    <div>
+                        <label>Size</label>
+                        <input type="number" id="size" step="0.5" required>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Est. Value ($):</label>
-                        <input type="number" id="value" min="0" required placeholder="220">
+
+                    <div>
+                        <label>Value ($)</label>
+                        <input type="number" id="value" required>
                     </div>
                 </div>
 
-                <div class="form-buttons">
-                    <button type="submit" id="save-btn">Add to Vault</button>
-                    <button type="button" id="cancel-btn" class="hidden" onclick="resetForm()">Cancel Edit</button>
-                </div>
+                <button type="submit" id="save-btn">Add Sneaker</button>
+                <button type="button" id="cancel-btn" onclick="resetForm()">Cancel</button>
             </form>
         </section>
 
-        <section class="list-section">
-            <h2>Collection</h2>
+        <section>
             <table id="collection-table">
                 <thead>
                     <tr>
@@ -77,5 +71,6 @@
     </div>
 
     <script src="app.js"></script>
+
 </body>
 </html>
