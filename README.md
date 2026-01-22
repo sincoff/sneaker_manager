@@ -3,30 +3,23 @@
 **Project:** Solo Project 1
 
 ## Overview
-This is a Single Page Application (SPA) that helps collectors track their sneaker inventory. It demonstrates CRUD functionality (Create, Read, Update, Delete) using vanilla JavaScript and persists data via the browser's LocalStorage.
+A local web app for tracking a sneaker collection. It supports full CRUD operations (Create, Read, Update, Delete) and saves data to the browser's localStorage so changes persist after a refresh.
 
 ## Features
-* **Dashboard Stats:** Real-time calculation of total pairs and portfolio value.
-* **Persistence:** Data is saved to LocalStorage, so it survives page refreshes.
-* **Input Validation:** Prevents invalid data entry.
-* **Safety:** Delete confirmation dialog prevents accidental removal.
-* **Pre-loaded Data:** Application initializes with 30 starter records if the database is empty.
+* **CRUD Operations:** Add, edit, and delete sneakers.
+* **Persistence:** Uses localStorage to save data between sessions.
+* **Stats View:** Auto-calculates total pairs and total portfolio value.
+* **Safety:** Includes a confirmation prompt before deleting items.
+* **Seed Data:** Auto-generates 30 starter records if the list is empty.
 
-## Setup Instructions (How to Run)
-This project is designed to run locally using XAMPP.
+## How to Run (XAMPP)
+1.  Make sure **Apache** is running in XAMPP.
+2.  Navigate to your web root (`C:\xampp\htdocs`).
+3.  Create a folder named `sneaker_manager`.
+4.  Place `index.html`, `style.css`, and `app.js` inside.
+5.  Go to `http://localhost/sneaker_manager/` in your browser.
 
-1.  Ensure **XAMPP** is installed and **Apache** is running.
-2.  Locate your XAMPP web root (typically `C:\xampp\htdocs` on Windows or `/Applications/XAMPP/xamppfiles/htdocs` on macOS).
-3.  Create a folder named `sneaker_manager` inside `htdocs`.
-4.  Copy the following project files into that folder:
-    * `index.html`
-    * `style.css`
-    * `app.js`
-5.  Open your web browser and navigate to:
-    `http://localhost/sneaker_manager/`
-
-## Technology Stack
-* HTML5
-* CSS3
-* JavaScript (ES6+)
+## Tech Stack
+* HTML/CSS
+* JavaScript (ES6)
 * LocalStorage API
