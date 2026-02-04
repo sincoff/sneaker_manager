@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Sneaker Manager</title>
+    <title>Cloud Sneaker Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
         <header>
-            <h1>Sneaker Inventory</h1>
+            <h1>Cloud Sneaker Inventory</h1>
             <div class="stats-box">
                 Total Pairs: <span id="total-count">0</span> | 
                 Total Value: $<span id="total-value">0</span>
@@ -31,17 +31,14 @@
                             <option value="Yeezy">Yeezy</option>
                         </select>
                     </div>
-
                     <div>
                         <label>Model</label>
                         <input type="text" id="model" placeholder="e.g. Air Max 90" required>
                     </div>
-
                     <div>
                         <label>Size</label>
                         <input type="number" id="size" step="0.5" required>
                     </div>
-
                     <div>
                         <label>Value ($)</label>
                         <input type="number" id="value" required>
@@ -57,6 +54,7 @@
             <table id="collection-table">
                 <thead>
                     <tr>
+                        <th style="width: 50px;">#</th> 
                         <th>Brand</th>
                         <th>Model</th>
                         <th>Size</th>
@@ -67,6 +65,12 @@
                 <tbody id="table-body">
                     </tbody>
             </table>
+
+            <div class="pagination-controls" style="margin-top: 20px; text-align: center;">
+                <button id="prev-btn" onclick="changePage(-1)">Previous</button>
+                <span id="page-indicator" style="margin: 0 15px; font-weight: bold;">Page 1</span>
+                <button id="next-btn" onclick="changePage(1)">Next</button>
+            </div>
         </section>
     </div>
 
