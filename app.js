@@ -67,12 +67,13 @@ function renderGrid(sneakers) {
     }
 
     sneakers.forEach(shoe => {
-        // Fallback for missing images (Rubric Requirement)
-        let imgUrl = shoe.image_url ? shoe.image_url : "https://via.placeholder.com/200?text=No+Image";
+        // Fallback for missing images (Rubric Requirement - no broken UI)
+        const placeholderSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
+        let imgUrl = shoe.image_url ? shoe.image_url : placeholderSvg;
         
         let card = `
             <div class="card">
-                <img src="${imgUrl}" onerror="this.src='https://via.placeholder.com/200?text=Broken+Image'" alt="${shoe.brand} ${shoe.model}">
+                <img src="${imgUrl}" onerror="this.src='${placeholderSvg}'" alt="${shoe.brand} ${shoe.model}">
                 <div class="card-info">
                     <div>
                         <h4>${shoe.brand} ${shoe.model}</h4>

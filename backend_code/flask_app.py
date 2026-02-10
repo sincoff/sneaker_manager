@@ -30,30 +30,73 @@ class Sneaker(db.Model):
     image_url = db.Column(db.String(500), nullable=True) # Required for Part 3
 
 # --- 3. HELPER: SEED DATA ---
+# Reliable image URLs (Unsplash allows hotlinking; Picsum as backup for variety)
+SNEAKER_IMAGES = [
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",  # Nike
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400",  # Jordan
+    "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400",  # Adidas
+    "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400",  # Nike
+    "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",  # Nike Air
+    "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400",  # Sneakers
+    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400",  # Nike
+    "https://images.unsplash.com/photo-1549289524-e30e5f2a6a22?w=400",  # Shoes
+    "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400",  # Sneakers
+    "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=400",  # Jordans
+    "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400",  # Nike
+    "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=400",  # Running
+    "https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=400",  # Nike
+    "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=400",  # Sneakers
+    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400",  # Nike
+    "https://picsum.photos/seed/sneaker16/400/400",  # Variety
+    "https://picsum.photos/seed/sneaker17/400/400",
+    "https://picsum.photos/seed/sneaker18/400/400",
+    "https://picsum.photos/seed/sneaker19/400/400",
+    "https://picsum.photos/seed/sneaker20/400/400",
+    "https://picsum.photos/seed/sneaker21/400/400",
+    "https://picsum.photos/seed/sneaker22/400/400",
+    "https://picsum.photos/seed/sneaker23/400/400",
+    "https://picsum.photos/seed/sneaker24/400/400",
+    "https://picsum.photos/seed/sneaker25/400/400",
+    "https://picsum.photos/seed/sneaker26/400/400",
+    "https://picsum.photos/seed/sneaker27/400/400",
+    "https://picsum.photos/seed/sneaker28/400/400",
+    "https://picsum.photos/seed/sneaker29/400/400",
+    "https://picsum.photos/seed/sneaker30/400/400",
+]
+
 def seed_database():
     if Sneaker.query.count() < 30:
         base_sneakers = [
-            {"brand": "Jordan", "model": "Chicago 1s", "size": 10, "value": 1500, "image_url": "https://images.stockx.com/images/Air-Jordan-1-Retro-High-Chicago-2015-Product.jpg"},
-            {"brand": "Nike", "model": "Dunk Low Panda", "size": 11, "value": 120, "image_url": "https://images.stockx.com/images/Nike-Dunk-Low-Retro-White-Black-2021-Product.jpg"},
-            {"brand": "Adidas", "model": "Samba OG", "size": 9, "value": 90, "image_url": "https://images.stockx.com/images/adidas-Samba-OG-Cloud-White-Core-Black-Product.jpg"},
-            {"brand": "Yeezy", "model": "Boost 350", "size": 10.5, "value": 300, "image_url": "https://images.stockx.com/images/Adidas-Yeezy-Boost-350-V2-Core-Black-Red-2017-Product.jpg"},
-            {"brand": "New Balance", "model": "550 White", "size": 10, "value": 110, "image_url": "https://images.stockx.com/images/New-Balance-550-White-Grey-Product.jpg"}
+            {"brand": "Jordan", "model": "Chicago 1s", "size": 10, "value": 1500, "image_url": SNEAKER_IMAGES[1]},
+            {"brand": "Nike", "model": "Dunk Low Panda", "size": 11, "value": 120, "image_url": SNEAKER_IMAGES[0]},
+            {"brand": "Adidas", "model": "Samba OG", "size": 9, "value": 90, "image_url": SNEAKER_IMAGES[2]},
+            {"brand": "Yeezy", "model": "Boost 350", "size": 10.5, "value": 300, "image_url": SNEAKER_IMAGES[3]},
+            {"brand": "New Balance", "model": "550 White", "size": 10, "value": 110, "image_url": SNEAKER_IMAGES[4]}
         ]
-        
+
         for s in base_sneakers:
             db.session.add(Sneaker(**s))
-        
-        # Add dummy records to hit the 30 minimum
+
         for i in range(6, 31):
             db.session.add(Sneaker(
                 brand="Nike",
                 model=f"Generic Air Max {i}",
                 size=10.0,
                 value=100 + (i * 5),
-                image_url="" # Empty URL to test placeholder logic
+                image_url=SNEAKER_IMAGES[(i - 1) % len(SNEAKER_IMAGES)]
             ))
         db.session.commit()
         print("Database seeded with 30 records!")
+
+    # Repair existing records with broken/empty StockX URLs
+    broken = Sneaker.query.filter(
+        or_(Sneaker.image_url.is_(None), Sneaker.image_url == "", Sneaker.image_url.like("%stockx%"))
+    ).all()
+    if broken:
+        for i, s in enumerate(broken):
+            s.image_url = SNEAKER_IMAGES[i % len(SNEAKER_IMAGES)]
+        db.session.commit()
+        print(f"Repaired {len(broken)} records with broken/missing image URLs.")
 
 # Create tables and seed when the app starts
 with app.app_context():
