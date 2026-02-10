@@ -1,4 +1,4 @@
-const API_URL = "https://sneaker-manager.onrender.com/sneakers"; // e.g., https://sneaker-api.onrender.com/sneakers
+const API_URL = "https://sneaker-manager.onrender.com"; // e.g., https://sneaker-api.onrender.com/sneakers
 
 let currentPage = 1;
 let currentLimit = 10;
