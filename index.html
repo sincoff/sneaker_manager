@@ -1,80 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Cloud Sneaker Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Vault Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="container">
         <header>
-            <h1>Cloud Sneaker Inventory</h1>
+            <h1>Sneaker Vault Pro</h1>
             <div class="stats-box">
                 Total Pairs: <span id="total-count">0</span> | 
-                Total Value: $<span id="total-value">0</span>
+                Total Value: $<span id="total-value">0</span> |
+                Page Size: <span id="current-page-size">10</span>
             </div>
         </header>
 
+        <section class="controls-section">
+            <input type="text" id="search-input" placeholder="Search brand or model..." onkeyup="handleSearch()">
+            
+            <select id="sort-select" onchange="handleSort()">
+                <option value="id">Sort by: Newest</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="brand">Brand: A-Z</option>
+            </select>
+            
+            <select id="page-size-select" onchange="handlePageSize()">
+                <option value="5">5 per page</option>
+                <option value="10">10 per page</option>
+                <option value="20">20 per page</option>
+                <option value="50">50 per page</option>
+            </select>
+        </section>
+
         <section class="form-section">
-            <h3>Add / Edit Sneaker</h3>
+            <h3>Manage Inventory</h3>
             <form id="item-form">
                 <input type="hidden" id="item-id">
-                
                 <div class="form-grid">
-                    <div>
-                        <label>Brand</label>
-                        <select id="brand" required>
-                            <option value="Nike">Nike</option>
-                            <option value="Jordan">Jordan</option>
-                            <option value="Adidas">Adidas</option>
-                            <option value="New Balance">New Balance</option>
-                            <option value="Yeezy">Yeezy</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Model</label>
-                        <input type="text" id="model" placeholder="e.g. Air Max 90" required>
-                    </div>
-                    <div>
-                        <label>Size</label>
-                        <input type="number" id="size" step="0.5" required>
-                    </div>
-                    <div>
-                        <label>Value ($)</label>
-                        <input type="number" id="value" required>
-                    </div>
+                    <input type="text" id="brand" placeholder="Brand" required>
+                    <input type="text" id="model" placeholder="Model" required>
+                    <input type="number" id="size" step="0.5" placeholder="Size" required>
+                    <input type="number" id="value" placeholder="Value ($)" required>
+                    <input type="url" id="image-url" placeholder="Image URL (optional)">
                 </div>
-
                 <button type="submit" id="save-btn">Add Sneaker</button>
-                <button type="button" id="cancel-btn" onclick="resetForm()">Cancel</button>
+                <button type="button" id="cancel-btn" onclick="resetForm()" style="display:none; background:#6c757d;">Cancel</button>
             </form>
         </section>
 
-        <section>
-            <table id="collection-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px;">#</th> 
-                        <th>Brand</th>
-                        <th>Model</th>
-                        <th>Size</th>
-                        <th>Value</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    </tbody>
-            </table>
+        <section id="sneaker-grid" class="grid-container">
+            </section>
 
-            <div class="pagination-controls" style="margin-top: 20px; text-align: center;">
-                <button id="prev-btn" onclick="changePage(-1)">Previous</button>
-                <span id="page-indicator" style="margin: 0 15px; font-weight: bold;">Page 1</span>
-                <button id="next-btn" onclick="changePage(1)">Next</button>
-            </div>
-        </section>
+        <div class="pagination-controls">
+            <button id="prev-btn" onclick="changePage(-1)">Previous</button>
+            <span id="page-indicator">Page 1</span>
+            <button id="next-btn" onclick="changePage(1)">Next</button>
+        </div>
     </div>
 
     <script src="app.js"></script>
-
 </body>
 </html>
