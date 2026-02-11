@@ -4,8 +4,15 @@ const PLACEHOLDER_SVG = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="
 
 // Global image error handler (Rubric - no broken UI)
 function handleImageError(img) {
-    img.onerror = null; // prevent infinite loop
-    img.src = PLACEHOLDER_SVG;
+    if (!img.dataset.fallback) {
+        // First failure: try the default sneaker image
+        img.dataset.fallback = "1";
+        img.src = DEFAULT_IMAGE;
+    } else {
+        // Default also failed: use SVG placeholder as last resort
+        img.onerror = null;
+        img.src = PLACEHOLDER_SVG;
+    }
 }
 
 let currentPage = 1;
@@ -41,8 +48,9 @@ function init() {
     let savedLimit = getCookie("sneaker_page_size");
     if (savedLimit) {
         currentLimit = parseInt(savedLimit);
-        document.getElementById('page-size-select').value = currentLimit;
     }
+    // Always sync the dropdown with the actual currentLimit
+    document.getElementById('page-size-select').value = currentLimit;
     fetchSneakers();
 }
 
@@ -149,11 +157,15 @@ form.addEventListener('submit', async (e) => {
     let url = id ? `${API_URL}/${id}` : API_URL;
 
     try {
-        await fetch(url, {
+        let res = await fetch(url, {
             method: method,
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
         });
+        if (!res.ok) {
+            alert("Error saving sneaker. Server returned: " + res.status);
+            return;
+        }
         resetForm();
         fetchSneakers(currentPage);
     } catch(err) {
