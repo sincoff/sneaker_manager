@@ -1,9 +1,13 @@
 const API_URL = "https://sneaker-manager.onrender.com/sneakers"; // e.g., https://sneaker-api.onrender.com/sneakers
-const DEFAULT_IMAGE = "images/e44216bea3fe-8ad8-de11-0226-024d8aaa.jpeg";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400";
 const PLACEHOLDER_SVG = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#e0e0e0" width="200" height="200"/><text fill="#999" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14">No Image</text></svg>');
 
 // Global image error handler (Rubric - no broken UI)
 function handleImageError(img) {
+    // #region agent log
+    console.log('[DEBUG handleImageError]', {failedSrc: img.src, alt: img.alt});
+    fetch('http://127.0.0.1:7242/ingest/82debc80-21ea-48af-b2cc-560ea784de40',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:handleImageError',message:'Image failed to load',data:{failedSrc:img.src,alt:img.alt},timestamp:Date.now(),hypothesisId:'A,D'})}).catch(()=>{});
+    // #endregion
     img.onerror = null; // prevent infinite loop
     img.src = PLACEHOLDER_SVG;
 }
@@ -76,6 +80,10 @@ function renderGrid(sneakers) {
 
     sneakers.forEach(shoe => {
         let imgUrl = (shoe.image_url && shoe.image_url.trim()) ? shoe.image_url : DEFAULT_IMAGE;
+        // #region agent log
+        console.log('[DEBUG renderGrid]', {rawImageUrl: shoe.image_url, resolvedImgUrl: imgUrl, brand: shoe.brand, model: shoe.model});
+        fetch('http://127.0.0.1:7242/ingest/82debc80-21ea-48af-b2cc-560ea784de40',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:renderGrid',message:'Image URL resolved',data:{rawImageUrl:shoe.image_url,resolvedImgUrl:imgUrl,defaultImage:DEFAULT_IMAGE,brand:shoe.brand,model:shoe.model},timestamp:Date.now(),hypothesisId:'A,B'})}).catch(()=>{});
+        // #endregion
         
         let card = `
             <div class="card">
@@ -144,6 +152,10 @@ form.addEventListener('submit', async (e) => {
         value: document.getElementById('value').value,
         image_url: imageUrl
     };
+    // #region agent log
+    console.log('[DEBUG formSubmit]', {imageUrl: imageUrl, sentToBackend: data.image_url});
+    fetch('http://127.0.0.1:7242/ingest/82debc80-21ea-48af-b2cc-560ea784de40',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'app.js:formSubmit',message:'Submitting sneaker data',data:{imageUrl:imageUrl,sentToBackend:data.image_url},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
 
     let method = id ? 'PUT' : 'POST';
     let url = id ? `${API_URL}/${id}` : API_URL;
