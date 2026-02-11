@@ -4,6 +4,8 @@
 
 ---
 
+> **NOTE:** The backend is hosted on Render's free tier, which spins down after periods of inactivity. **The first request may take up to 1 minute** while the server cold-starts. After that initial load, all subsequent requests will be fast. Please allow time for the data to appear on first visit.
+
 ## Live Deployment
 * **Production App (Custom Domain):** [https://sneaker-manager.xyz](https://sneaker-manager.xyz)
 * **Backend API (Render):** [https://sneaker-manager.onrender.com/sneakers](https://sneaker-manager.onrender.com/sneakers)
