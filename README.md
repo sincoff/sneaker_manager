@@ -92,7 +92,7 @@ Sensitive data is **never** committed to source code. This project uses **Enviro
 
 ### Frontend (Netlify) — Manual Deploy
 1. In the Netlify Dashboard, go to **Deploys → Drag and drop**.
-2. Drag the project folder (containing `index.html`, `app.js`, `style.css`, and the `images/` folder) into the deploy zone.
+2. Drag the project folder (containing `index.html`, `app.js`, and `style.css`) into the deploy zone.
 3. Netlify processes and publishes the site within seconds.
 4. Custom domain `sneaker-manager.xyz` is configured in Netlify → Domain Management with DNS handled by GoDaddy (CNAME `www` → Netlify subdomain).
 5. HTTPS is automatically provisioned by Netlify (Let's Encrypt).
