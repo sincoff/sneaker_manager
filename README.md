@@ -1,60 +1,139 @@
-# Cloud Collection Manager (Pro Edition)
+# Sneaker Vault Pro — Collection Manager
 **Course:** CPSC 3750 | **Project:** Solo Project 3
-**Developer:** [Your Name]
+**Developer:** Ian Sincoff
 
-## 🚀 Live Deployment
-* **Production App (Custom Domain):** [https://www.your-custom-domain.xyz](https://www.your-custom-domain.xyz)
-* **Backend API (Render):** [https://sneaker-api.onrender.com/sneakers](https://sneaker-api.onrender.com/sneakers)
+---
 
-## 📋 Project Overview
-This is a full-stack, production-grade web application for managing a sneaker inventory. Unlike previous iterations, this version is deployed on a distributed cloud architecture using a SQL database, supports image handling, and features advanced data controls like server-side sorting, filtering, and configurable pagination.
+## Live Deployment
+* **Production App (Custom Domain):** [https://sneaker-manager.xyz](https://sneaker-manager.xyz)
+* **Backend API (Render):** [https://sneaker-manager.onrender.com/sneakers](https://sneaker-manager.onrender.com/sneakers)
 
-## 🏗️ Architecture & Tech Stack
-This project uses a decoupled **Client-Server** architecture:
+---
+
+## Project Overview
+A full-stack, production-grade web application for managing a sneaker inventory. The app supports full CRUD functionality with data stored in a PostgreSQL database, deployed on a distributed cloud architecture, and accessible through a custom domain with HTTPS.
+
+---
+
+## Architecture & Tech Stack
 
 | Component | Technology | Hosting Provider | Description |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | HTML5, CSS3, JavaScript | **Netlify** | Static asset hosting with custom domain DNS. |
 | **Backend** | Python 3.10, Flask | **Render** | REST API handling business logic and SQL connections. |
 | **Database** | PostgreSQL | **Neon** | Serverless SQL database for persistent storage. |
-| **Domain** | DNS / CNAME Record | **GoDaddy** | Custom domain routing to Netlify. |
+| **Domain** | DNS / CNAME Record | **GoDaddy** | Custom domain `sneaker-manager.xyz` routing to Netlify. |
 
-## 🔋 Features
-### 1. Advanced Data Management (CRUD + SQL)
+---
+
+## Features
+
+### 1. Full CRUD (Create, Read, Update, Delete)
 * **Create:** Add new sneakers with Brand, Model, Size, Value, and Image URL.
-* **Read:** View inventory in a responsive grid layout.
-* **Update:** Edit any record details instantly.
-* **Delete:** Remove records with a safety confirmation dialog.
-* **Persistence:** All data is stored in a **PostgreSQL** database, ensuring data survives server restarts and is consistent across devices.
+* **Read:** View inventory in a responsive card/grid layout with images.
+* **Update:** Edit any record — form auto-populates with existing data.
+* **Delete:** Remove records with a confirmation dialog before deletion.
+* **Persistence:** All data stored in **PostgreSQL** on Neon — survives restarts and is consistent across devices.
 
-### 2. Professional UI/UX
-* **Image Handling:** Displays product images for every record. Includes automatic fallback placeholders for broken or missing image links.
-* **Responsive Grid:** CSS Grid layout adapts to mobile, tablet, and desktop screens.
-* **Visual Feedback:** Loading states, empty state messages ("No sneakers found"), and confirmation alerts.
-
-### 3. Server-Side Controls
-* **Pagination:** Users can configure page size (5, 10, 20, 50).
-* **Cookie Memory:** The application remembers your preferred page size setting using browser cookies.
+### 2. Search, Sort & Pagination
 * **Search:** Real-time filtering by Brand or Model name.
-* **Sorting:** Sort data by:
-    * Newest (ID Descending)
-    * Price (Low to High)
-    * Price (High to Low)
-    * Brand Name (A-Z)
+* **Sorting:** Sort by Newest, Price (Low→High / High→Low), or Brand (A–Z).
+* **Pagination:** Configurable page size (5, 10, 20, 50).
+* **Cookie Memory:** Page size preference saved in a browser cookie and restored on reload.
+* Paging works correctly with search and sorting combined.
 
-## ⚙️ Configuration & Secrets
-Sensitive data (Database Credentials) is **not** stored in the source code. This project uses **Environment Variables** for security.
+### 3. Images
+* Each record includes an image displayed in the List View.
+* Users can provide an Image URL when adding/editing a record.
+* If no image is provided, a default sneaker image is used.
+* If an image fails to load, a fallback placeholder is displayed (no broken UI).
 
-* **Local Development:** Variables are managed via a `.env` file (excluded from Git).
-* **Production (Render):** Variables are set in the Render Dashboard.
-    * `DATABASE_URL`: The connection string for the Neon PostgreSQL database.
+### 4. Stats View
+* **Total Pairs:** Count of all records in the database.
+* **Total Value:** Sum of all sneaker values (domain-specific statistic).
+* **Page Size:** Currently selected page size displayed.
 
-## 🛠️ Local Setup Instructions
-If you wish to run this project locally for grading or development:
+### 5. UI/UX
+* Production-quality design with consistent spacing and layout.
+* Responsive CSS Grid adapts to mobile, tablet, and desktop.
+* Success toast notifications after add, update, and delete operations.
+* Error messages on failures; empty state messaging when no records found.
+* Delete confirmation dialog before removing any record.
 
-**1. Backend Setup**
+---
+
+## Configuration & Secrets
+Sensitive data is **never** committed to source code. This project uses **Environment Variables**.
+
+* **Local Development:** Variables managed via a `.env` file (excluded from Git via `.gitignore`).
+* **Production (Render):** Variables set in the Render Dashboard under Environment settings.
+  * `DATABASE_URL` — Connection string for the Neon PostgreSQL database.
+
+---
+
+## Deployment Guide
+
+### Frontend (Netlify)
+1. Push changes to the `main` branch on GitHub.
+2. Netlify auto-deploys from the connected GitHub repository.
+3. The publish directory is the repository root (`.`).
+4. Custom domain `sneaker-manager.xyz` is configured in Netlify → Domain Management with DNS handled by GoDaddy (CNAME `www` → Netlify subdomain).
+5. HTTPS is automatically provisioned by Netlify (Let's Encrypt).
+
+### Backend (Render)
+1. Push changes to the `main` branch on GitHub.
+2. Render auto-deploys from the connected GitHub repository.
+3. Build command: `pip install -r requirements.txt`
+4. Start command: `gunicorn flask_app:app` (or `python flask_app.py`)
+5. Environment variable `DATABASE_URL` is set in the Render Dashboard.
+6. The backend runs at `https://sneaker-manager.onrender.com`.
+
+### Database (Neon)
+* PostgreSQL hosted on [Neon](https://neon.tech).
+* Tables are auto-created on first backend startup via SQLAlchemy `db.create_all()`.
+* Seed data (30 records) is automatically inserted if fewer than 30 records exist.
+* Connection string provided to Render via the `DATABASE_URL` environment variable.
+
+### How to Update the App
+1. Make code changes locally.
+2. `git add . && git commit -m "description" && git push`
+3. Netlify (frontend) and Render (backend) auto-redeploy from `main`.
+
+---
+
+## Local Setup Instructions
+
+### 1. Backend
 ```bash
-cd backend
+cd backend_code
 pip install -r requirements.txt
-# Set your DATABASE_URL environment variable here
+# Set your DATABASE_URL environment variable:
+# Windows PowerShell: $env:DATABASE_URL="your_neon_connection_string"
+# Mac/Linux: export DATABASE_URL="your_neon_connection_string"
 python flask_app.py
+```
+The API will start at `http://localhost:5000`.
+
+### 2. Frontend
+Open `index.html` in a browser, or serve via XAMPP/Live Server at `http://localhost/sneaker_manager/`.
+
+> **Note:** For local development, update `API_URL` in `app.js` to point to `http://localhost:5000/sneakers`.
+
+---
+
+## Submission Checklist
+- [x] Live custom domain URL: https://sneaker-manager.xyz
+- [x] HTTPS enabled (Netlify auto-provisions SSL)
+- [x] SQL database: PostgreSQL on Neon
+- [x] 30+ seeded records on first launch
+- [x] Full CRUD operations persist to PostgreSQL
+- [x] Delete confirmation implemented
+- [x] Each record displays an image in the List View
+- [x] Broken/missing images handled with fallback placeholder
+- [x] Search/filtering by brand or model
+- [x] Sorting by newest, price, brand
+- [x] Configurable page size (5, 10, 20, 50)
+- [x] Page size preference persisted via cookie
+- [x] Stats view: total records, page size, total value
+- [x] GitHub repository submitted
+- [x] Documentation (this README) covers all required fields

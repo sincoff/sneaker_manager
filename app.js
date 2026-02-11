@@ -15,6 +15,14 @@ function handleImageError(img) {
     }
 }
 
+// --- TOAST NOTIFICATIONS ---
+function showToast(message, isError = false) {
+    let toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = isError ? 'toast error show' : 'toast show';
+    setTimeout(() => { toast.className = 'toast'; }, 3000);
+}
+
 let currentPage = 1;
 let currentLimit = 10;
 let currentSearch = "";
@@ -163,23 +171,29 @@ form.addEventListener('submit', async (e) => {
             body: JSON.stringify(data)
         });
         if (!res.ok) {
-            alert("Error saving sneaker. Server returned: " + res.status);
+            showToast("Error saving sneaker. Server returned: " + res.status, true);
             return;
         }
+        showToast(id ? "Sneaker updated successfully!" : "Sneaker added successfully!");
         resetForm();
         fetchSneakers(currentPage);
     } catch(err) {
-        alert("Error saving sneaker.");
+        showToast("Error saving sneaker. Please try again.", true);
     }
 });
 
 async function deleteItem(id) {
     if(confirm("Are you sure you want to delete this record?")) {
         try {
-            await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+            let res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
+            if (!res.ok) {
+                showToast("Error deleting sneaker. Server returned: " + res.status, true);
+                return;
+            }
+            showToast("Sneaker deleted successfully!");
             fetchSneakers(currentPage);
         } catch(err) {
-            alert("Error deleting sneaker.");
+            showToast("Error deleting sneaker. Please try again.", true);
         }
     }
 }

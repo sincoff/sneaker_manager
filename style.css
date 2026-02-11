@@ -29,3 +29,29 @@ button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; 
 .pagination-controls button { background: #007bff; margin: 0 10px; }
 .pagination-controls button:disabled { background: #ccc; cursor: not-allowed; }
 #page-indicator { font-weight: bold; }
+
+/* Toast Notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #28a745;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.95em;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    z-index: 9999;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+}
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.toast.error {
+    background: #e74c3c;
+}
