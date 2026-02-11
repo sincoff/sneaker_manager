@@ -1,5 +1,12 @@
 const API_URL = "https://sneaker-manager.onrender.com/sneakers"; // e.g., https://sneaker-api.onrender.com/sneakers
-const DEFAULT_IMAGE = "/images/e44216bea3fe-8ad8-de11-0226-024d8aaa.jpeg";
+const DEFAULT_IMAGE = "images/e44216bea3fe-8ad8-de11-0226-024d8aaa.jpeg";
+const PLACEHOLDER_SVG = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#e0e0e0" width="200" height="200"/><text fill="#999" x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="14">No Image</text></svg>');
+
+// Global image error handler (Rubric - no broken UI)
+function handleImageError(img) {
+    img.onerror = null; // prevent infinite loop
+    img.src = PLACEHOLDER_SVG;
+}
 
 let currentPage = 1;
 let currentLimit = 10;
@@ -68,15 +75,11 @@ function renderGrid(sneakers) {
     }
 
     sneakers.forEach(shoe => {
-        // Default image when none provided; try default then SVG on failure (Rubric - no broken UI)
-        const placeholderSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
         let imgUrl = (shoe.image_url && shoe.image_url.trim()) ? shoe.image_url : DEFAULT_IMAGE;
-        // onerror: try default image first, then SVG if both fail (prevents infinite loop via dataset check)
-        let onErr = `this.onerror=null;this.src=(this.dataset.tried==='1'?'${placeholderSvg}':(this.dataset.tried='1','${DEFAULT_IMAGE}'))`;
         
         let card = `
             <div class="card">
-                <img src="${imgUrl}" onerror="${onErr}" alt="${shoe.brand} ${shoe.model}">
+                <img src="${imgUrl}" onerror="handleImageError(this)" alt="${shoe.brand} ${shoe.model}">
                 <div class="card-info">
                     <div>
                         <h4>${shoe.brand} ${shoe.model}</h4>
@@ -139,7 +142,7 @@ form.addEventListener('submit', async (e) => {
         model: document.getElementById('model').value,
         size: document.getElementById('size').value,
         value: document.getElementById('value').value,
-        image_url: imageUrl || DEFAULT_IMAGE
+        image_url: imageUrl
     };
 
     let method = id ? 'PUT' : 'POST';
