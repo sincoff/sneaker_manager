@@ -62,6 +62,23 @@ A full-stack, production-grade web application for managing a sneaker inventory.
 
 ---
 
+## Database Schema
+
+The application uses a single `sneaker` table in PostgreSQL:
+
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `INTEGER` | `PRIMARY KEY`, auto-increment | Unique record identifier |
+| `brand` | `VARCHAR(50)` | `NOT NULL` | Sneaker brand (e.g., Nike, Adidas) |
+| `model` | `VARCHAR(100)` | `NOT NULL` | Sneaker model name |
+| `size` | `FLOAT` | `NOT NULL` | Shoe size (e.g., 10.5) |
+| `value` | `FLOAT` | `NOT NULL` | Dollar value of the sneaker |
+| `image_url` | `VARCHAR(500)` | `NULLABLE` | URL to a product image |
+
+The table is auto-created on first startup via SQLAlchemy's `db.create_all()`. If fewer than 30 records exist, the app seeds 30 default sneaker entries.
+
+---
+
 ## Configuration & Secrets
 Sensitive data is **never** committed to source code. This project uses **Environment Variables**.
 
