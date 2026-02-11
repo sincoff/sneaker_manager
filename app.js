@@ -1,4 +1,5 @@
 const API_URL = "https://sneaker-manager.onrender.com/sneakers"; // e.g., https://sneaker-api.onrender.com/sneakers
+const DEFAULT_IMAGE = "/e44216bea3fe-8ad8-de11-0226-024d8aaa.jpeg";
 
 let currentPage = 1;
 let currentLimit = 10;
@@ -67,9 +68,9 @@ function renderGrid(sneakers) {
     }
 
     sneakers.forEach(shoe => {
-        // Fallback for missing images (Rubric Requirement - no broken UI)
+        // Default image when none provided; SVG placeholder if default also fails (Rubric Requirement - no broken UI)
         const placeholderSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ctext fill='%23999' x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
-        let imgUrl = shoe.image_url ? shoe.image_url : placeholderSvg;
+        let imgUrl = (shoe.image_url && shoe.image_url.trim()) ? shoe.image_url : DEFAULT_IMAGE;
         
         let card = `
             <div class="card">
@@ -130,12 +131,13 @@ let form = document.getElementById('item-form');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     let id = document.getElementById('item-id').value;
+    let imageUrl = document.getElementById('image-url').value.trim();
     let data = {
         brand: document.getElementById('brand').value,
         model: document.getElementById('model').value,
         size: document.getElementById('size').value,
         value: document.getElementById('value').value,
-        image_url: document.getElementById('image-url').value
+        image_url: imageUrl || DEFAULT_IMAGE
     };
 
     let method = id ? 'PUT' : 'POST';
