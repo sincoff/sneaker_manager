@@ -65,16 +65,44 @@ function init() {
 // --- FETCH & RENDER ---
 async function fetchSneakers(page = 1) {
     try {
-        let url = `${API_URL}?page=${page}&limit=${currentLimit}&q=${currentSearch}&sort=${currentSort}`;
+        // When searching, fetch all results so we can filter by both brand AND model client-side
+        let isSearching = currentSearch.trim().length > 0;
+        let fetchLimit = isSearching ? 1000 : currentLimit;
+        let fetchPage = isSearching ? 1 : page;
+
+        let url = `${API_URL}?page=${fetchPage}&limit=${fetchLimit}&sort=${currentSort}`;
         const response = await fetch(url);
         const result = await response.json();
 
-        currentPage = result.current_page;
-        currentData = result.data; 
+        let data = result.data;
 
-        renderGrid(result.data);
-        updateStats(result.stats);
-        updatePaging(result.total_pages);
+        // Client-side filtering: match search term against both brand and model
+        if (isSearching) {
+            let term = currentSearch.trim().toLowerCase();
+            data = data.filter(shoe =>
+                shoe.brand.toLowerCase().includes(term) ||
+                shoe.model.toLowerCase().includes(term) ||
+                `${shoe.brand} ${shoe.model}`.toLowerCase().includes(term)
+            );
+
+            // Client-side pagination of filtered results
+            let totalFiltered = data.length;
+            let totalPages = Math.ceil(totalFiltered / currentLimit) || 1;
+            currentPage = Math.min(page, totalPages);
+            let start = (currentPage - 1) * currentLimit;
+            let paginatedData = data.slice(start, start + parseInt(currentLimit));
+
+            currentData = paginatedData;
+            renderGrid(paginatedData);
+            updateStats({ count: totalFiltered, total_value: data.reduce((sum, s) => sum + parseFloat(s.value || 0), 0) });
+            updatePaging(totalPages);
+        } else {
+            currentPage = result.current_page;
+            currentData = result.data;
+            renderGrid(result.data);
+            updateStats(result.stats);
+            updatePaging(result.total_pages);
+        }
 
     } catch (error) {
         console.error("Error fetching data:", error);
