@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 
 app = Flask(__name__)
 CORS(app)
@@ -27,7 +27,7 @@ class Sneaker(db.Model):
     model = db.Column(db.String(100), nullable=False)
     size = db.Column(db.Float, nullable=False)
     value = db.Column(db.Float, nullable=False)
-    image_url = db.Column(db.String(500), nullable=True) # Required for Part 3
+    image_url = db.Column(db.Text, nullable=True)  # Text allows long URLs (was 500 char limit)
 
 # --- 3. HELPER: SEED DATA ---
 # All Unsplash sneaker/shoe images (no Picsum - those show random content)
@@ -102,6 +102,12 @@ def seed_database():
 # Create tables and seed when the app starts
 with app.app_context():
     db.create_all()
+    # Migrate image_url to TEXT if it was VARCHAR(500) - fixes 500 error on long URLs
+    try:
+        db.session.execute(text("ALTER TABLE sneaker ALTER COLUMN image_url TYPE TEXT"))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
     seed_database()
 
 # --- 4. ROUTES ---
@@ -154,29 +160,43 @@ def get_sneakers():
 
 @app.route('/sneakers', methods=['POST'])
 def add_sneaker():
-    data = request.json
-    new_item = Sneaker(
-        brand=data['brand'],
-        model=data['model'],
-        size=data['size'],
-        value=data['value'],
-        image_url=data.get('image_url', '')
-    )
-    db.session.add(new_item)
-    db.session.commit()
-    return jsonify({"message": "Created"}), 201
+    try:
+        data = request.json or {}
+        new_item = Sneaker(
+            brand=str(data.get('brand', '')).strip() or 'Unknown',
+            model=str(data.get('model', '')).strip() or 'Unknown',
+            size=float(data.get('size', 0)),
+            value=float(data.get('value', 0)),
+            image_url=str(data.get('image_url', '') or '').strip() or None
+        )
+        db.session.add(new_item)
+        db.session.commit()
+        return jsonify({"message": "Created"}), 201
+    except (ValueError, TypeError) as e:
+        db.session.rollback()
+        return jsonify({"error": "Invalid data: " + str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/sneakers/<int:id>', methods=['PUT'])
 def update_sneaker(id):
-    item = Sneaker.query.get_or_404(id)
-    data = request.json
-    item.brand = data['brand']
-    item.model = data['model']
-    item.size = data['size']
-    item.value = data['value']
-    item.image_url = data.get('image_url', '')
-    db.session.commit()
-    return jsonify({"message": "Updated"})
+    try:
+        item = Sneaker.query.get_or_404(id)
+        data = request.json or {}
+        item.brand = str(data.get('brand', item.brand)).strip() or item.brand
+        item.model = str(data.get('model', item.model)).strip() or item.model
+        item.size = float(data.get('size', item.size))
+        item.value = float(data.get('value', item.value))
+        item.image_url = str(data.get('image_url', '') or '').strip() or None
+        db.session.commit()
+        return jsonify({"message": "Updated"})
+    except (ValueError, TypeError) as e:
+        db.session.rollback()
+        return jsonify({"error": "Invalid data: " + str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/sneakers/<int:id>', methods=['DELETE'])
 def delete_sneaker(id):

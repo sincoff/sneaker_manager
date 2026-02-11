@@ -171,7 +171,15 @@ form.addEventListener('submit', async (e) => {
             body: JSON.stringify(data)
         });
         if (!res.ok) {
-            showToast("Error saving sneaker. Server returned: " + res.status, true);
+            let msg = "Error saving sneaker.";
+            try {
+                let err = await res.json();
+                if (err.error) msg += " " + err.error;
+                else msg += " Server returned: " + res.status;
+            } catch (_) {
+                msg += " Server returned: " + res.status;
+            }
+            showToast(msg, true);
             return;
         }
         showToast(id ? "Sneaker updated successfully!" : "Sneaker added successfully!");
@@ -187,7 +195,15 @@ async function deleteItem(id) {
         try {
             let res = await fetch(`${API_URL}/${id}`, {method: 'DELETE'});
             if (!res.ok) {
-                showToast("Error deleting sneaker. Server returned: " + res.status, true);
+                let msg = "Error deleting sneaker.";
+                try {
+                    let err = await res.json();
+                    if (err.error) msg += " " + err.error;
+                    else msg += " Server returned: " + res.status;
+                } catch (_) {
+                    msg += " Server returned: " + res.status;
+                }
+                showToast(msg, true);
                 return;
             }
             showToast("Sneaker deleted successfully!");

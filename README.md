@@ -73,7 +73,7 @@ The application uses a single `sneaker` table in PostgreSQL:
 | `model` | `VARCHAR(100)` | `NOT NULL` | Sneaker model name |
 | `size` | `FLOAT` | `NOT NULL` | Shoe size (e.g., 10.5) |
 | `value` | `FLOAT` | `NOT NULL` | Dollar value of the sneaker |
-| `image_url` | `VARCHAR(500)` | `NULLABLE` | URL to a product image |
+| `image_url` | `TEXT` | `NULLABLE` | URL to a product image |
 
 The table is auto-created on first startup via SQLAlchemy's `db.create_all()`. If fewer than 30 records exist, the app seeds 30 default sneaker entries.
 
