@@ -53,11 +53,9 @@ function getCookie(name) {
 
 // Initialize logic (runs on load)
 function init() {
-    let savedLimit = getCookie("sneaker_page_size");
-    if (savedLimit) {
-        currentLimit = parseInt(savedLimit);
-    }
-    // Always sync the dropdown with the actual currentLimit
+    currentLimit = 10; // default on every reload
+    setCookie("sneaker_page_size", currentLimit, 30); // keep cookie synced with default
+    // Always sync the dropdown with the actual currentLimit (10 on reload)
     document.getElementById('page-size-select').value = currentLimit;
     fetchSneakers();
 }
