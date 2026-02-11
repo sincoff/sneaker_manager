@@ -30,38 +30,38 @@ class Sneaker(db.Model):
     image_url = db.Column(db.String(500), nullable=True) # Required for Part 3
 
 # --- 3. HELPER: SEED DATA ---
-# Reliable image URLs (Unsplash allows hotlinking; Picsum as backup for variety)
+# All Unsplash sneaker/shoe images (no Picsum - those show random content)
 SNEAKER_IMAGES = [
-    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",  # Nike
-    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400",  # Jordan
-    "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400",  # Adidas
-    "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400",  # Nike
-    "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",  # Nike Air
-    "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400",  # Sneakers
-    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400",  # Nike
-    "https://images.unsplash.com/photo-1549289524-e30e5f2a6a22?w=400",  # Shoes
-    "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400",  # Sneakers
-    "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=400",  # Jordans
-    "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400",  # Nike
-    "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=400",  # Running
-    "https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=400",  # Nike
-    "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=400",  # Sneakers
-    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400",  # Nike
-    "https://picsum.photos/seed/sneaker16/400/400",  # Variety
-    "https://picsum.photos/seed/sneaker17/400/400",
-    "https://picsum.photos/seed/sneaker18/400/400",
-    "https://picsum.photos/seed/sneaker19/400/400",
-    "https://picsum.photos/seed/sneaker20/400/400",
-    "https://picsum.photos/seed/sneaker21/400/400",
-    "https://picsum.photos/seed/sneaker22/400/400",
-    "https://picsum.photos/seed/sneaker23/400/400",
-    "https://picsum.photos/seed/sneaker24/400/400",
-    "https://picsum.photos/seed/sneaker25/400/400",
-    "https://picsum.photos/seed/sneaker26/400/400",
-    "https://picsum.photos/seed/sneaker27/400/400",
-    "https://picsum.photos/seed/sneaker28/400/400",
-    "https://picsum.photos/seed/sneaker29/400/400",
-    "https://picsum.photos/seed/sneaker30/400/400",
+    "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",  # Red Nike runner
+    "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400",  # White Nike high-top
+    "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=400",  # Nike pair on dark bg
+    "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=400",  # Green Nike pair
+    "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",  # White Nike AF1
+    "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400",  # Running shoe close-up
+    "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400",  # Orange Nike shoe
+    "https://images.unsplash.com/photo-1549289524-e30e5f2a6a22?w=400",  # Sneaker shelf
+    "https://images.unsplash.com/photo-1605348532760-6753d2c43329?w=400",  # Jordan colorway
+    "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=400",  # Jordans hanging
+    "https://images.unsplash.com/photo-1597045566677-8cf032ed6634?w=400",  # Nike sneaker profile
+    "https://images.unsplash.com/photo-1584735175097-719d848f8449?w=400",  # Running shoes
+    "https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=400",  # Nike React
+    "https://images.unsplash.com/photo-1603808033192-082d6919d3e1?w=400",  # Sneaker on concrete
+    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400",  # Nike Dunk
+    "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=400",  # Sneaker collection
+    "https://images.unsplash.com/photo-1587563871167-1ee9c731aefb?w=400",  # Jordan 1 pair
+    "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400",  # Orange Nike runner
+    "https://images.unsplash.com/photo-1539185441755-769473a23570?w=400",  # Colorful Nike
+    "https://images.unsplash.com/photo-1607522370275-f14206abe5d3?w=400",  # Nike AF1 white
+    "https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=400",  # Jordan 1 bred
+    "https://images.unsplash.com/photo-1581101767113-1677fc2beaa8?w=400",  # Adidas sneaker
+    "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=400",  # Nike running shoe
+    "https://images.unsplash.com/photo-1515955656352-a1fa3ffcd111?w=400",  # Sneaker on yellow
+    "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400",  # Colorful sneakers
+    "https://images.unsplash.com/photo-1543508282-6319a3e2621f?w=400",  # Converse pair
+    "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=400",  # Vans classic
+    "https://images.unsplash.com/photo-1465453869711-7e174808ace9?w=400",  # Running shoes
+    "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9?w=400",  # Stacked sneakers
+    "https://images.unsplash.com/photo-1612902456551-404b9a18b1e8?w=400",  # White sneaker pair
 ]
 
 def seed_database():
@@ -88,9 +88,10 @@ def seed_database():
         db.session.commit()
         print("Database seeded with 30 records!")
 
-    # Repair existing records with broken/empty StockX URLs
+    # Repair existing records with broken/empty/non-sneaker image URLs
     broken = Sneaker.query.filter(
-        or_(Sneaker.image_url.is_(None), Sneaker.image_url == "", Sneaker.image_url.like("%stockx%"))
+        or_(Sneaker.image_url.is_(None), Sneaker.image_url == "",
+            Sneaker.image_url.like("%stockx%"), Sneaker.image_url.like("%picsum%"))
     ).all()
     if broken:
         for i, s in enumerate(broken):
