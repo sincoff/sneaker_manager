@@ -90,20 +90,19 @@ Sensitive data is **never** committed to source code. This project uses **Enviro
 
 ## Deployment Guide
 
-### Frontend (Netlify)
-1. Push changes to the `main` branch on GitHub.
-2. Netlify auto-deploys from the connected GitHub repository.
-3. The publish directory is the repository root (`.`).
+### Frontend (Netlify) — Manual Deploy
+1. In the Netlify Dashboard, go to **Deploys → Drag and drop**.
+2. Drag the project folder (containing `index.html`, `app.js`, `style.css`, and the `images/` folder) into the deploy zone.
+3. Netlify processes and publishes the site within seconds.
 4. Custom domain `sneaker-manager.xyz` is configured in Netlify → Domain Management with DNS handled by GoDaddy (CNAME `www` → Netlify subdomain).
 5. HTTPS is automatically provisioned by Netlify (Let's Encrypt).
 
 ### Backend (Render)
-1. Push changes to the `main` branch on GitHub.
-2. Render auto-deploys from the connected GitHub repository.
-3. Build command: `pip install -r requirements.txt`
-4. Start command: `gunicorn flask_app:app` (or `python flask_app.py`)
-5. Environment variable `DATABASE_URL` is set in the Render Dashboard.
-6. The backend runs at `https://sneaker-manager.onrender.com`.
+1. Render is connected to the GitHub repository and auto-deploys from the `main` branch.
+2. Build command: `pip install -r requirements.txt`
+3. Start command: `gunicorn flask_app:app` (or `python flask_app.py`)
+4. Environment variable `DATABASE_URL` is set in the Render Dashboard.
+5. The backend runs at `https://sneaker-manager.onrender.com`.
 
 ### Database (Neon)
 * PostgreSQL hosted on [Neon](https://neon.tech).
@@ -113,8 +112,8 @@ Sensitive data is **never** committed to source code. This project uses **Enviro
 
 ### How to Update the App
 1. Make code changes locally.
-2. `git add . && git commit -m "description" && git push`
-3. Netlify (frontend) and Render (backend) auto-redeploy from `main`.
+2. **Frontend:** Drag and drop the updated project folder into Netlify's deploy area (Deploys → Drag and drop).
+3. **Backend:** `git add . && git commit -m "description" && git push` — Render auto-redeploys from `main`.
 
 ---
 
