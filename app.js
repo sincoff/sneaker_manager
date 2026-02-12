@@ -57,26 +57,53 @@ function init() {
     if (savedLimit) {
         currentLimit = parseInt(savedLimit);
     }
-    // Always sync the dropdown with the actual currentLimit
+    let savedSort = getCookie("sneaker_sort");
+    if (savedSort) {
+        currentSort = savedSort;
+    }
+    // Always sync the dropdowns with the actual values
     document.getElementById('page-size-select').value = currentLimit;
+    document.getElementById('sort-select').value = currentSort;
     fetchSneakers();
+}
+
+// --- CLIENT-SIDE SORTING ---
+function sortData(data, sortType) {
+    let sorted = [...data];
+    switch (sortType) {
+        case "brand":
+            sorted.sort((a, b) => {
+                let nameA = `${a.brand} ${a.model}`.toLowerCase();
+                let nameB = `${b.brand} ${b.model}`.toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+            break;
+        case "price_asc":
+            sorted.sort((a, b) => parseFloat(a.value) - parseFloat(b.value));
+            break;
+        case "price_desc":
+            sorted.sort((a, b) => parseFloat(b.value) - parseFloat(a.value));
+            break;
+        case "id":
+        default:
+            sorted.sort((a, b) => b.id - a.id);
+            break;
+    }
+    return sorted;
 }
 
 // --- FETCH & RENDER ---
 async function fetchSneakers(page = 1) {
     try {
-        // When searching, fetch all results so we can filter by both brand AND model client-side
-        let isSearching = currentSearch.trim().length > 0;
-        let fetchLimit = isSearching ? 1000 : currentLimit;
-        let fetchPage = isSearching ? 1 : page;
-
-        let url = `${API_URL}?page=${fetchPage}&limit=${fetchLimit}&sort=${currentSort}`;
+        // Fetch all results so we can sort and filter properly client-side
+        let url = `${API_URL}?page=1&limit=1000`;
         const response = await fetch(url);
         const result = await response.json();
 
         let data = result.data;
 
         // Client-side filtering: match search term against both brand and model
+        let isSearching = currentSearch.trim().length > 0;
         if (isSearching) {
             let term = currentSearch.trim().toLowerCase();
             data = data.filter(shoe =>
@@ -84,25 +111,22 @@ async function fetchSneakers(page = 1) {
                 shoe.model.toLowerCase().includes(term) ||
                 `${shoe.brand} ${shoe.model}`.toLowerCase().includes(term)
             );
-
-            // Client-side pagination of filtered results
-            let totalFiltered = data.length;
-            let totalPages = Math.ceil(totalFiltered / currentLimit) || 1;
-            currentPage = Math.min(page, totalPages);
-            let start = (currentPage - 1) * currentLimit;
-            let paginatedData = data.slice(start, start + parseInt(currentLimit));
-
-            currentData = paginatedData;
-            renderGrid(paginatedData);
-            updateStats({ count: totalFiltered, total_value: data.reduce((sum, s) => sum + parseFloat(s.value || 0), 0) });
-            updatePaging(totalPages);
-        } else {
-            currentPage = result.current_page;
-            currentData = result.data;
-            renderGrid(result.data);
-            updateStats(result.stats);
-            updatePaging(result.total_pages);
         }
+
+        // Client-side sorting
+        data = sortData(data, currentSort);
+
+        // Client-side pagination
+        let totalItems = data.length;
+        let totalPages = Math.ceil(totalItems / currentLimit) || 1;
+        currentPage = Math.min(page, totalPages);
+        let start = (currentPage - 1) * currentLimit;
+        let paginatedData = data.slice(start, start + parseInt(currentLimit));
+
+        currentData = paginatedData;
+        renderGrid(paginatedData);
+        updateStats({ count: totalItems, total_value: data.reduce((sum, s) => sum + parseFloat(s.value || 0), 0) });
+        updatePaging(totalPages);
 
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -162,6 +186,7 @@ function handleSearch() {
 
 function handleSort() {
     currentSort = document.getElementById('sort-select').value;
+    setCookie("sneaker_sort", currentSort, 30);
     fetchSneakers(1);
 }
 
