@@ -93,12 +93,35 @@ function sortData(data, sortType) {
 }
 
 // --- FETCH & RENDER ---
+function showLoading(message = "Loading sneakers...", sub = "") {
+    const container = document.getElementById('sneaker-grid');
+    container.innerHTML = `
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>${message}</p>
+            ${sub ? `<p class="loading-sub">${sub}</p>` : ""}
+        </div>`;
+}
+
+async function fetchWithRetry(url, retries = 3) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            let response = await fetch(url);
+            if (!response.ok) throw new Error(`Server returned ${response.status}`);
+            return await response.json();
+        } catch (error) {
+            if (attempt === retries) throw error;
+            showLoading("Connecting to server...", `Retry ${attempt} of ${retries - 1}...`);
+            await new Promise(r => setTimeout(r, 2000));
+        }
+    }
+}
+
 async function fetchSneakers(page = 1) {
+    showLoading();
     try {
-        // Fetch all results so we can sort and filter properly client-side
         let url = `${API_URL}?page=1&limit=1000`;
-        const response = await fetch(url);
-        const result = await response.json();
+        const result = await fetchWithRetry(url);
 
         let data = result.data;
 
@@ -130,6 +153,12 @@ async function fetchSneakers(page = 1) {
 
     } catch (error) {
         console.error("Error fetching data:", error);
+        const container = document.getElementById('sneaker-grid');
+        container.innerHTML = `
+            <p style="grid-column: 1 / -1; text-align:center; color: #e74c3c;">
+                Failed to load sneakers. <a href="#" onclick="fetchSneakers(1); return false;" style="color: #007bff;">Try again</a>
+            </p>`;
+        showToast("Could not connect to server. Please try again.", true);
     }
 }
 
